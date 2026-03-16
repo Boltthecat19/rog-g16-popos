@@ -250,6 +250,36 @@ else
     fi
 fi
 
+# --- Power Profile Conflicts ---
+echo ""
+info "POWER PROFILE CONFLICTS"
+echo ""
+
+CONFLICTING_PKGS=()
+if dpkg -l | grep -q "^ii.*tlp "; then
+    CONFLICTING_PKGS+=("tlp")
+fi
+if dpkg -l | grep -q "^ii.*tlp-rdw"; then
+    CONFLICTING_PKGS+=("tlp-rdw")
+fi
+if dpkg -l | grep -q "^ii.*power-profiles-daemon"; then
+    CONFLICTING_PKGS+=("power-profiles-daemon")
+fi
+
+if [[ ${#CONFLICTING_PKGS[@]} -gt 0 ]]; then
+    warn "Found conflicting power managers: ${CONFLICTING_PKGS[*]}"
+    echo "    These conflict with system76-power and cause unpredictable"
+    echo "    behavior (GPU mode resets, fan issues, battery drain)."
+    echo "    Only system76-power and thermald should manage power."
+    if confirm; then
+        apt remove -y "${CONFLICTING_PKGS[@]}"
+        info "Removed ${CONFLICTING_PKGS[*]}"
+        CHANGES_MADE=true
+    fi
+else
+    info "No conflicting power managers found (skipping)"
+fi
+
 # --- Disable Unused Services ---
 echo ""
 info "DISABLE UNUSED SERVICES"
