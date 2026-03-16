@@ -1,0 +1,4 @@
+# MEI modules for i915 GSC proxy - prevent 17s boot timeout
+mei
+mei_me
+mei_gsc_proxy
