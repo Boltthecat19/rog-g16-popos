@@ -115,6 +115,40 @@ Ensures the login screen waits for NVIDIA persistence daemon before starting. Pr
 **nvidia-persistenced** (`/etc/systemd/system/nvidia-persistenced.service.d/override.conf`):
 Adds retry logic, waits for `/dev/nvidia0` before starting, and enables verbose logging.
 
+### Power Profile Conflicts
+
+Pop!_OS uses `system76-power` to manage GPU switching and power profiles. If TLP or `power-profiles-daemon` are also installed (some desktop environments or packages pull them in as dependencies), they will fight over the same power settings, causing unpredictable behavior like GPU mode not sticking, fan profiles resetting, or battery drain.
+
+The fix is to remove the conflicting services and let `system76-power` handle everything:
+
+```bash
+sudo apt remove tlp tlp-rdw
+sudo apt remove power-profiles-daemon
+```
+
+Only `system76-power` and `thermald` should be running. Verify with:
+```bash
+systemctl is-active system76-power    # should be active
+systemctl is-active thermald          # should be active
+systemctl is-active tlp               # should be inactive or not found
+systemctl is-active power-profiles-daemon  # should be inactive or not found
+```
+
+### Storage Optimization
+
+Add `noatime` to your storage drive mount options in `/etc/fstab` to reduce unnecessary write I/O. Without it, every file read updates the access timestamp.
+
+Find your storage drive line in `/etc/fstab` and add `noatime` to the options:
+```
+# Before
+UUID=xxxx  /mnt/storage  ext4  defaults,nofail  0  2
+
+# After
+UUID=xxxx  /mnt/storage  ext4  defaults,noatime,nofail  0  2
+```
+
+> **Note:** Only apply this to secondary storage drives. The root partition on Pop!_OS typically already has `noatime`.
+
 ### Disabled Services
 
 These services are safe to disable on Pop!_OS:
@@ -183,6 +217,11 @@ sudo mkdir -p /etc/systemd/system/nvidia-persistenced.service.d
 sudo cp configs/nvidia-persistenced-override.conf /etc/systemd/system/nvidia-persistenced.service.d/override.conf
 
 sudo systemctl daemon-reload
+```
+
+### Remove conflicting power managers
+```bash
+sudo apt remove tlp tlp-rdw power-profiles-daemon
 ```
 
 ### Disable unused services
