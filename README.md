@@ -287,6 +287,32 @@ Do not chase the cryptswap rabbit hole. Fix VMD first, then re-evaluate if you a
 - The `COSMIC_RENDER_DEVICE` in the greeter drop-in may need adjustment depending on which `/dev/dri/card*` is your display GPU. Check with `ls -la /dev/dri/by-path/`.
 - Tested on Pop!_OS 24.04 with COSMIC desktop.
 
+## Applicability to Other Systems
+
+This guide is written for Pop!_OS but many fixes apply more broadly.
+
+**Any ASUS ROG G16 2025 on Linux (any distro):**
+- VMD disable in BIOS
+- Speaker firmware symlinks (CS35L56 hardware is the same)
+- NVIDIA open driver requirement (Blackwell requires it regardless of distro)
+- MEI initramfs modules for GSC proxy timeout
+- Kernel parameters (pcie_aspm, nvme_core, i915 backlight)
+
+**Any Intel Core Ultra 200 (Arrow Lake) laptop on Linux:**
+- VMD disable
+- Kernel 6.11+ requirement
+- MEI/GSC proxy timeout fix
+- pcie_aspm=off for sleep/resume
+- nvme_core parameters for NVMe stability
+
+**Pop!_OS specific (will not work on other distros):**
+- `kernelstub` for kernel parameters (other distros use GRUB or other bootloaders)
+- `system76-power` conflict resolution (only exists on Pop!_OS / System76 hardware)
+- cosmic-greeter systemd drop-in (COSMIC desktop)
+- Disabling GRUB services (other distros actually use GRUB)
+
+If you are on Fedora, Arch, Ubuntu, or another distro, the hardware fixes still apply. You will just need to adapt how you set kernel parameters (e.g., editing `/etc/default/grub` instead of using `kernelstub`).
+
 ## Disclaimer
 
 This repository is provided as is. I am not responsible for anything these changes cause to your system. You are responsible for your own hardware, software, and any modifications you make. Back up your data before making system level changes.
