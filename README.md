@@ -32,7 +32,7 @@ This is critical. With VMD enabled, the system will experience PCIe bus errors t
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/rog-g16-popos.git
+git clone https://github.com/Boltthecat19/rog-g16-popos.git
 cd rog-g16-popos
 chmod +x install.sh
 sudo ./install.sh
