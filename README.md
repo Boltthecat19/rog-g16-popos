@@ -248,6 +248,10 @@ Do not chase the cryptswap rabbit hole. Fix VMD first, then re-evaluate if you a
 - The `COSMIC_RENDER_DEVICE` in the greeter drop-in may need adjustment depending on which `/dev/dri/card*` is your display GPU. Check with `ls -la /dev/dri/by-path/`.
 - Tested on Pop!_OS 24.04 with COSMIC desktop.
 
+## Disclaimer
+
+This repository is provided as is. I am not responsible for anything these changes cause to your system. You are responsible for your own hardware, software, and any modifications you make. Back up your data before making system level changes.
+
 ## License
 
 MIT
